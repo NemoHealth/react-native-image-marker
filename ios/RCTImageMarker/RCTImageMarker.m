@@ -242,6 +242,11 @@ UIImage * markerImgByPostion(UIImage *image, NSString* text, MarkerPosition posi
             };
             break;
     }
+    
+    //ADD BLACK BACKGROUND COLOR
+    (UIRectFill(rect));
+    [[UIColor blackColor] set];
+    
     [text drawInRect:rect withAttributes:attr];
     UIImage *aimg = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();

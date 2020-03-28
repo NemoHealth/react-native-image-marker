@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.Map;
 
 /**
  * Created by jimmydaddy on 2018/4/8.
@@ -101,11 +102,14 @@ public class Utils {
     }
 
 
-    public static Bitmap rotateBitmap(String path, Float scale) {
+    public static Bitmap scaleBitmap(String path, Float scale) {
         int degree = readDegree(path);
 
         BitmapFactory.Options options = new BitmapFactory.Options();
         Bitmap prePhoto = null;
+        options.inPurgeable = true;
+        options.inInputShareable = true;
+        options.inSampleSize = scale.intValue();
         try {
             prePhoto = BitmapFactory.decodeFile(path, options);
         } catch (OutOfMemoryError e) {
@@ -130,19 +134,62 @@ public class Utils {
             mtx.postScale(scale, scale);
         }
 
-        Bitmap rotatedBitmap = null;
+        Bitmap scaledBitmap = null;
 
         try {
-            rotatedBitmap = Bitmap.createBitmap(prePhoto, 0, 0, w, h, mtx, true);
+            scaledBitmap = Bitmap.createBitmap(prePhoto, 0, 0, w, h, mtx, true);
         } catch (OutOfMemoryError e) {
             System.out.print(e.getMessage());
-            while(rotatedBitmap == null) {
+            while(scaledBitmap == null) {
                 System.gc();
                 System.runFinalization();
-                rotatedBitmap = Bitmap.createBitmap(prePhoto, 0, 0, w, h, mtx, true);
+                scaledBitmap = Bitmap.createBitmap(prePhoto, 0, 0, w, h, mtx, true);
             }
         }
-        return rotatedBitmap;
+        return scaledBitmap;
+    }
+
+    public static Bitmap scaleBitmap(Bitmap bitmap, Float scale) {
+        int w = bitmap.getWidth();
+        int h = bitmap.getHeight();
+
+        Matrix mtx = new Matrix();
+        if (scale != 1 && scale >= 0) {
+            mtx.postScale(scale, scale);
+        }
+
+        Bitmap scaledBitmap = null;
+
+        try {
+            scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
+        } catch (OutOfMemoryError e) {
+            System.out.print(e.getMessage());
+            while(scaledBitmap == null) {
+                System.gc();
+                System.runFinalization();
+                scaledBitmap = Bitmap.createBitmap(bitmap, 0, 0, w, h, mtx, true);
+            }
+        }
+        return scaledBitmap;
+    }
+    
+    public static String transRGBColor(String color) {
+        String colorStr = color.substring(1);
+        if (colorStr.length() == 3) {
+            String fullColor = "";
+            for (int i = 0; i < colorStr.length(); i++) {
+                String temp = colorStr.substring(i, i + 1);
+                fullColor += temp + temp;
+            }
+            return "#"+fullColor;
+        } else {
+            return color;
+        }
+    }
+
+    public static String getStringSafe(String key, Map<String, Object> map) {
+        Object obj = map.get(key);
+        return (obj != null) ? obj.toString() : null;
     }
 
 //

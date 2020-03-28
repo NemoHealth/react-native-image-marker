@@ -33,7 +33,12 @@ DerivedData
 .gradle
 local.properties
 .vscode
+android/build
 
 # node.js
 #
 npm-debug.log
+node_modules
+package-lock.json
+.huskyrc
+yarn.lock

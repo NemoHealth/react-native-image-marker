@@ -21,6 +21,9 @@ DerivedData
 *.ipa
 *.xcuserstate
 *.iml
+.project
+example/example/android/app/bin
+.settings
 
 # Android/IJ
 #
@@ -31,4 +34,7 @@ local.properties
 
 # node.js
 #
+package-lock.json
 npm-debug.log
+node_modules
+yarn.lock
